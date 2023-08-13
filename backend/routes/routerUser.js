@@ -4,6 +4,8 @@ const router = new express.Router();
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
+const fetchuser = require("../middleware/fetchuser")
+
 
 //Idealy this is kept in .evn file 
 //this is a string from which jwt token sign is created and this should be kept hidden form anyone
@@ -73,6 +75,16 @@ router.post("/api/authuser", async (req, res) => {
 });
 
 //Get loggedin user details using post : login requried
+//fetchuser is my middleware
+router.post("/api/getuser",fetchuser, async (req,res)=>{
+    try {
+        const userid = req.user.id;//fetching the id from req that has been atteched by middleware
+        const user  = await User.findById(userid,{password:0});
+        res.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 
 

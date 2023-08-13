@@ -1,6 +1,11 @@
 const mongoose=  require("mongoose");
 
 const NotesSch = new mongoose.Schema({
+    //user is my foriegn key
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,// it defines that the user will hold data from another schema
+        ref:'User'
+    },
     title:{
         type:String,
         required:true
@@ -19,4 +24,4 @@ const NotesSch = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.Model("note",NotesSch);
+module.exports = mongoose.model("note",NotesSch);
