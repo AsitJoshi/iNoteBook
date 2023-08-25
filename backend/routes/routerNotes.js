@@ -54,7 +54,7 @@ router.patch("/api/updatenote/:id", fetchuser, async (req, res) => {
         //checking if the user is trying to update its own note or not
         if (note.userId.toString() != req.user.id) { return res.status(401).send("Not Allowed") };
 
-        note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { upsert: true });
+        note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote });
         res.send(note);
     } catch (err) {
         console.log(err.message);
