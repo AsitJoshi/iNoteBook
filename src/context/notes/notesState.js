@@ -40,7 +40,7 @@ const NoteState = (props) => {
   }
 
 
-  //Add a note
+  //------------------------>Add a note
   const addNote = async (title, description, tag) => {
     //API CALL
     let url = `${host}/api/addnote`;
@@ -54,24 +54,15 @@ const NoteState = (props) => {
     });
     const json = await response.json();
 
-    //Logic to edit in client
-    let note = {
-      "_id": "64d8bcdaca19zecc2bb7448ef",
-      "userId": "64cbfe2fd138e03c789c7b70",
-      "title": title,
-      "description": description,
-      "tag": tag,
-      "date": "2023-08-13T11:22:02.732Z",
-      "__v": 0
-    };
-    setNotes(notes.concat(note));
+    // // Logic to edit in client
+    setNotes(notes.concat(json));
   }
   //edit a note
   const editNote = async (id, title, description, tag) => {
     //API CALL
     let url = `${host}/api/updatenote/${id}`;
     const response = await fetch(url, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRjYmZlMmZkMTM4ZTAzYzc4OWM3YjcwIn0sImlhdCI6MTY5MTgzMjcwN30.ZoaZv00LKSZ8oMn3hYPCaHfNgOPIQy3oD4J-Gd5Xi1g'
@@ -80,14 +71,18 @@ const NoteState = (props) => {
     });
     const json = await response.json();
     //Logic to edit in client
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
+
+    let newNote = JSON.parse(JSON.stringify(notes));
+    for (let index = 0; index < newNote.length; index++) {
+      const element = newNote[index];
       if (element._id === id) {
-        element.title = title;
-        element.description = description;
-        element.tag = tag;
+         newNote[index].title = title;
+         newNote[index].description = description;
+         newNote[index].tag = tag;
+         break;
       }
     }
+    setNotes(newNote);
   }
 
   //delete a note
@@ -117,7 +112,7 @@ const NoteState = (props) => {
     // <NoteContext.Provider value={{state,update}}>
     //     {props.children}
     // </NoteContext.Provider>
-    <NoteContext.Provider value={{ notes, addNote, deleteNote, getNotes }} >
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, getNotes, editNote }} >
       {props.children}
     </NoteContext.Provider>
   )
