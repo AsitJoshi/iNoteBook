@@ -11,7 +11,7 @@ import NoteState from './context/notes/notesState';
 import Alert from './components/Alert';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 
@@ -26,6 +26,20 @@ function App() {
         setAlert(null);
     }, 1500);
 }
+
+function checkLoggedIn() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    // User is not logged in, clear localStorage
+    localStorage.clear();
+  }
+}
+
+// Call the checkLoggedIn function when the app initializes
+useEffect(() => {
+  checkLoggedIn();
+}, []);
+
 
   //i will wrap every component into notesstate so all the state will be available in every compo.
   return (

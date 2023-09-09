@@ -21,15 +21,16 @@ const [cred,setCred] = useState({email:"",password:""});
         if(json.success){
             //save the authtoken redirecting to home page
             localStorage.setItem('token',json.authToken);
+            props.showAlert("Login Successfull","success");
             navigate("/");
-      props.showAlert("Login Successfull","success");
+            // console.log(localStorage.getItem('token'));
 
 
         }else{
           props.showAlert("Invalid Credentials","danger");
 
         }
-        console.log(json);
+        // console.log(json);
     }
 
     const onchange = (e)=>{
