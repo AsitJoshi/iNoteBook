@@ -11,9 +11,10 @@ const fetchuser = require("../middleware/fetchuser")
 //this is a string from which jwt token sign is created and this should be kept hidden form anyone
 const JWT_SECRET = "Asitisa@goodboy";
 
-
 //create a user using POST method
 router.post("/api/createuser", async (req, res) => {
+    let success = false;
+
     try {
         const salt = await bcrypt.genSalt(10);
         const secPass = await bcrypt.hash(req.body.password, salt);//genrates a hash for ur pwd with salt added
@@ -34,10 +35,11 @@ router.post("/api/createuser", async (req, res) => {
 
         // await user.save();
         // res.status(200).send(user);
-        res.status(200).send(authToken);
+        success = true;
+        res.status(200).json({ success, authToken });
     } catch (error) {
-        res.status(500).send(error)
-        console.log(error);
+        res.status(500).json({ success, msg: error.message })
+        console.log(error.message);
     }
 
 });
@@ -47,17 +49,21 @@ router.post("/api/createuser", async (req, res) => {
 
 //Authenticate a user using post req
 router.post("/api/authuser", async (req, res) => {
+    let success = false;
+
     const { email, password } = req.body;
     // console.log(password);
     try {
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).send("invalid email aur password");
+            success = false;
+            return res.status(400).json({ success, msg: "invalid email aur password" });
         }
         //password-entered by user//user.password=pwd present in ur db
         const comparePwd = await bcrypt.compare(password, user.password);//this function comapare the entered pwd with the hash present in ur data base
         if (!comparePwd) {
-            return res.status(400).send("invalid email aur password");
+            success = false;
+            return res.status(400).json({ success, msg: "invalid email aur password" });
         }
 
         const payload = {//payload is the data present in the aut token
@@ -66,7 +72,8 @@ router.post("/api/authuser", async (req, res) => {
             }
         }
         const authToken = jwt.sign(payload, JWT_SECRET);
-        res.send(authToken)
+        success = true;
+        res.json({ success, authToken })
 
     } catch (error) {
         console.log(error);
@@ -76,10 +83,10 @@ router.post("/api/authuser", async (req, res) => {
 
 //Get loggedin user details using post : login requried
 //fetchuser is my middleware
-router.post("/api/getuser",fetchuser, async (req,res)=>{
+router.post("/api/getuser", fetchuser, async (req, res) => {
     try {
         const userid = req.user.id;//fetching the id from req that has been atteched by middleware
-        const user  = await User.findById(userid,{password:0});
+        const user = await User.findById(userid, { password: 0 });
         res.status(200).send(user);
     } catch (error) {
         console.log(error);

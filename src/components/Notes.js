@@ -4,7 +4,7 @@ import NoteItem from './NoteItem';
 import AddNote from './AddNote';
 
 
-const Notes = () => {
+const Notes = (props) => {
   const context = useContext(noteContext);//storing all the states provided by the notesState
   const { notes, getNotes,editNote } = context;//desturcturing
 
@@ -27,6 +27,8 @@ const Notes = () => {
   const updateNote = (currNote) => {
     ref.current.click();
     setNote({id:currNote._id,etitle:currNote.title,edescription:currNote.description,etag:currNote.tag});
+    
+
   }
 
  
@@ -34,6 +36,7 @@ const Notes = () => {
   const handelClick = (e)=>{
     editNote(note.id,note.etitle,note.edescription,note.etag);
     refClose.current.click();
+    props.showAlert("Updated Successfully","success");
   }
 
   const onchange = (e)=>{
@@ -43,7 +46,7 @@ const Notes = () => {
 
   return (
     <>
-      <AddNote />
+      <AddNote showAlert={props.showAlert}/>
       <button ref={ref} type="button" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         Launch static backdrop modal
       </button>
@@ -84,7 +87,7 @@ const Notes = () => {
          <h4><i> {notes.length===0 && 'NOTES HAI HI NHI AAPK KOISE'}</i></h4>{/*JAB ELSE ME KUCH NHI HOTA TO && KRKE 1st ME CONDN AUR 2nd ME JO RETURN KRNA HAI*/}
         </div>
         {notes.map((element) => {
-          return <NoteItem key={element._id} note={element} updateNote={updateNote} />;
+          return <NoteItem key={element._id} note={element} updateNote={updateNote} showAlert={props.showAlert}/>;
         })}
       </div>
     </>

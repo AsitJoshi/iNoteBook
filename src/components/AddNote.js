@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import noteContext from '../context/notes/notesContext';
 
 
-const AddNote = () => {
+const AddNote = (props) => {
   const context = useContext(noteContext);//storing all the states provided by the notesState
   const { addNote } = context;//desturcturing
 
@@ -20,6 +20,8 @@ const AddNote = () => {
         description:"",
         tag:""
       })//clearing fields after adding
+      props.showAlert("Note Added Successfully","success");
+
   }
 
   const onchange = (e)=>{
